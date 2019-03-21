@@ -1,8 +1,9 @@
 require_relative('../db/sql_runner')
+require_relative('./house')
 
 class MiniWhizz
 
-  attr_reader :first_name, :second_name, :house, :age, :id
+  attr_reader :first_name, :second_name, :house, :age, :id, :house_id
 
   def initialize(options)
     @id = options['id'].to_i if options['id']
@@ -10,10 +11,21 @@ class MiniWhizz
     @second_name = options['second_name']
     @house = options['house']
     @age = options['age'].to_i
+    @house_id = options['house_id'].to_i
+  end
+
+  def house()
+    # sql = 'SELECT * FROM houses WHERE id = $1'
+    # values = [@house_id]
+    # hashes = SqlRunner.run(sql, values)
+    # objects = House.new(hashes)
+    # return objects
+    house = House.find(@house_id)
+    return house
   end
 
   def save()
-    sql = 'INSERT INTO hogwarts (first_name, second_name, house, age)
+    sql = 'INSERT INTO whizzies (first_name, second_name, house, age)
           VALUES ($1, $2, $3, $4)
           RETURNING *'
     values = [@first_name, @second_name, @house, @age]
@@ -22,22 +34,22 @@ class MiniWhizz
   end
 
   def self.delete_all()
-    sql = 'DELETE FROM hogwarts'
+    sql = 'DELETE FROM whizzies'
     SqlRunner.run(sql)
   end
 
   def self.all()
-    sql = 'SELECT * FROM hogwarts'
-    hogwarts = SqlRunner.run(sql)
-    result = hogwarts.map { |hogwarts| MiniWhizz.new(hogwarts) }
+    sql = 'SELECT * FROM whizzies'
+    whizzies = SqlRunner.run(sql)
+    result = whizzies.map { |whizzies| MiniWhizz.new(whizzies) }
     return result
   end
 
   def self.find(id)
-    sql = 'SELECT * FROM hogwarts WHERE id = $1'
+    sql = 'SELECT * FROM whizzies WHERE id = $1'
     values = [id]
-    hogwarts = SqlRunner.run(sql, values)[0]
-    result = MiniWhizz.new(hogwarts)
+    whizzies = SqlRunner.run(sql, values)[0]
+    result = MiniWhizz.new(whizzies)
     return result
   end
 

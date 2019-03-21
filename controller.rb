@@ -1,6 +1,7 @@
 require('sinatra')
 require('sinatra/contrib/all')
 require_relative('./models/miniwhizz')
+require_relative('./models/house')
 also_reload('./models/*')
 
   get '/mini-whizz' do #index
